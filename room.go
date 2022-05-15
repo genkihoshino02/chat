@@ -12,15 +12,16 @@ type room struct {
 	join    chan *client
 	leave   chan *client
 	clients map[*client]bool
-	tracer trace.Tracer
+	tracer  trace.Tracer
 }
 
-func newRoom() *room{
+func newRoom() *room {
 	return &room{
-		forward:make(chan []byte),
-		join:make(chan *client),
-		leave:make(chan *client),
-		clients:make(map[*client]bool),
+		forward: make(chan []byte),
+		join:    make(chan *client),
+		leave:   make(chan *client),
+		clients: make(map[*client]bool),
+		tracer:  trace.Off(),
 	}
 }
 
@@ -35,7 +36,7 @@ func (r *room) run() {
 			close(client.send)
 			r.tracer.Trace("Client leaved \n")
 		case msg := <-r.forward:
-			r.tracer.Trace("Message was sent : ",string(msg))
+			r.tracer.Trace("Message was sent : ", string(msg))
 			for client := range r.clients {
 				select {
 				case client.send <- msg:
@@ -58,19 +59,19 @@ const (
 
 var upgrader = &websocket.Upgrader{ReadBufferSize: socketBufferSize, WriteBufferSize: socketBufferSize}
 
-func (r *room) ServeHTTP(w http.ResponseWriter,req *http.Request){
-	socket,err := upgrader.Upgrade(w,req,nil)
-	if err != nil{
-		log.Fatal("ServeHTTP: ",err)
+func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	socket, err := upgrader.Upgrade(w, req, nil)
+	if err != nil {
+		log.Fatal("ServeHTTP: ", err)
 		return
 	}
 	client := &client{
 		socket: socket,
-		send : make(chan []byte,messageBufferSize),
-		room : r,
+		send:   make(chan []byte, messageBufferSize),
+		room:   r,
 	}
 	r.join <- client
-	defer func(){r.leave <- client}()
+	defer func() { r.leave <- client }()
 	go client.write()
 	client.read()
 }

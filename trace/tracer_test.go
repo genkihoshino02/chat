@@ -16,6 +16,9 @@ func TestNew(t *testing.T){
 			t.Errorf("'%s' is wrong output",buf.String())
 		}
 	}
+}
 
-	
+func TestOff(t *testing.T){
+	var silentTracer Tracer = Off()
+	silentTracer.Trace("Data")
 }
