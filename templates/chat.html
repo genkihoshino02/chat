@@ -39,7 +39,7 @@
                 if(!window["WebSocket"]){
                     alert("error : Cannot use websocket in this browser");
                 }else{
-                    socket = new WebSocket("ws://localhost:8080/room");
+                    socket = new WebSocket("ws://{{.Host}}/room");
                     socket.onclose = function(){
                         alert("Finished connection");
                     }
