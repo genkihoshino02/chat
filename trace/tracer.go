@@ -9,22 +9,22 @@ type Tracer interface {
 	Trace(...interface{})
 }
 
-type tracer struct{
+type tracer struct {
 	out io.Writer
 }
 
 type nilTracer struct{}
 
-func (t *tracer) Trace(a ...interface{}){
+func (t *tracer) Trace(a ...interface{}) {
 	t.out.Write([]byte(fmt.Sprint(a...)))
 	t.out.Write([]byte("\n"))
 }
 
 func New(w io.Writer) Tracer {
-	return &tracer{out:w}
+	return &tracer{out: w}
 }
 
-func (t *nilTracer) Trace(a ...interface{}){}
+func (t *nilTracer) Trace(a ...interface{}) {}
 
 func Off() Tracer {
 	return &nilTracer{}
