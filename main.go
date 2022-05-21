@@ -16,8 +16,8 @@ import (
 )
 
 const securityKey string = "securityKey"
-const clientID string = "147770207720-53qfqmfjgack4hap4hiqbbtoof6g3b9g.apps.googleusercontent.com"
-const privateKey string = "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"
+const clientID string = "googleusercontent.com"
+const privateKey string = ""
 
 type templateHandler struct {
 	once     sync.Once
